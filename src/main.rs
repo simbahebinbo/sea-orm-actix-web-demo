@@ -1,18 +1,13 @@
 use std::env;
-use std::sync::Mutex;
 
 use actix_files::Files as Fs;
-use actix_files::FilesService;
-use actix_http::Uri;
 use actix_web::{
     App, error, Error, get, HttpRequest, HttpResponse, HttpServer, middleware, post, Result, web,
 };
-use actix_web::cookie::time::format_description::modifier::WeekNumberRepr;
-use actix_web::cookie::time::macros::date;
-use actix_web::web::{Data, Form, Json, Path};
+use actix_web::web::{Data, Form};
 use listenfd::ListenFd;
-use sea_orm::{DatabaseConnection, Iden, TransactionStream};
 use sea_orm::{entity::*, query::*};
+use sea_orm::DatabaseConnection;
 use serde::{Deserialize, Serialize};
 use tera::Tera;
 
@@ -49,11 +44,11 @@ async fn list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRespons
     let posts_per_page = params.posts_per_page.unwrap_or(DEFAULT_POSTS_PER_PAGE);
     let paginator = Post::find()
         .order_by_asc(post::Column::Id)
-        .paginate(conn, posts_per_page);
+        .paginate(conn, posts_per_page.try_into().unwrap());
     let num_pages = paginator.num_pages().await.ok().unwrap();
 
     let posts = paginator
-        .fetch_page(page - 1)
+        .fetch_page((page - 1).try_into().unwrap())
         .await
         .expect("could not retrieve posts");
     let mut ctx = tera::Context::new();

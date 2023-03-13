@@ -9,7 +9,7 @@ edition = "2021"
 members = [".", "entity", "socket"]
 
 [dependencies]
-sea-orm = { version = "0.8.0", features = ["sqlx-mysql", "runtime-actix-native-tls", "debug-print"] }
+sea-orm = { version = "0.11.0", features = ["sqlx-mysql", "runtime-actix-native-tls", "debug-print"] }
 actix-files = "0.6"
 actix-http = "3"
 actix-rt = "2.7"
@@ -18,11 +18,7 @@ actix-web = "4"
 
 tera = "1.15.0"
 dotenv = "0.15"
-listenfd = "0.5"
+listenfd = "1.0.0"
 serde = "1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 entity = { path = "entity" }
-
-#[dependencies.sqlx-rt]
-#version = "0.5.13"
-#features=["runtime-actix-native-tls"]
