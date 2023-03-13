@@ -9,6 +9,6 @@ path = "src/lib.rs"
 
 
 [dependencies]
-serde = {version= "1", feature = ["serde_derive"]}
+serde = { version = "1", feature = ["serde_derive"] }
 sea-orm = "0.8.0"
 

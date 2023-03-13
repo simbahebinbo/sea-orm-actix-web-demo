@@ -1,22 +1,23 @@
-use actix_files::Files as Fs;
-use actix_web::{
-    error, get, middleware, post, web, App, Error, HttpRequest, HttpResponse, HttpServer, Result,
-};
+use std::env;
+use std::sync::Mutex;
 
-use entity::post;
-use entity::post::Entity as Post;
+use actix_files::Files as Fs;
+use actix_files::FilesService;
+use actix_http::Uri;
+use actix_web::{
+    App, error, Error, get, HttpRequest, HttpResponse, HttpServer, middleware, post, Result, web,
+};
+use actix_web::cookie::time::format_description::modifier::WeekNumberRepr;
+use actix_web::cookie::time::macros::date;
+use actix_web::web::{Data, Form, Json, Path};
 use listenfd::ListenFd;
 use sea_orm::{DatabaseConnection, Iden, TransactionStream};
 use sea_orm::{entity::*, query::*};
 use serde::{Deserialize, Serialize};
-use std::env;
-use std::sync::Mutex;
-use actix_files::FilesService;
-use actix_http::Uri;
-use actix_web::cookie::time::format_description::modifier::WeekNumberRepr;
-use actix_web::cookie::time::macros::date;
-use actix_web::web::{Data, Form, Json, Path};
 use tera::Tera;
+
+use entity::post;
+use entity::post::Entity as Post;
 
 const DEFAULT_POSTS_PER_PAGE: usize = 5;
 
