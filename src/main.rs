@@ -6,7 +6,6 @@ use actix_web::{
 use entity::post;
 use entity::post::Entity as Post;
 use listenfd::ListenFd;
-use migration::{Migrator, MigratorTrait};
 use sea_orm::{DatabaseConnection, Iden, TransactionStream};
 use sea_orm::{entity::*, query::*};
 use serde::{Deserialize, Serialize};
@@ -93,7 +92,7 @@ async fn create(data: Data<AppState>, post_form: Form<post::Model>) -> Result<Ht
 }
 
 #[get("/{id}")]
-async fn edit(data: Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
+async fn edit(data: Data<AppState>, id: web::Path<u64>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let template = &data.templates;
     let post: post::Model = Post::find_by_id(id.into_inner())
@@ -112,7 +111,7 @@ async fn edit(data: Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, 
 
 #[post("/{id}")]
 async fn update(data: Data<AppState>,
-                id: web::Path<i32>,
+                id: web::Path<u64>,
                 post_form: web::Form<post::Model>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
@@ -129,7 +128,7 @@ async fn update(data: Data<AppState>,
 }
 
 #[post("/delete/{id}")]
-async fn delete(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
+async fn delete(data: web::Data<AppState>, id: web::Path<u64>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let post: post::ActiveModel = Post::find_by_id(id.into_inner())
         .one(conn)
@@ -169,7 +168,6 @@ async fn main() -> std::io::Result<()> {
     let port = get_env_var("PORT");
     let server_url = format!("{}:{}", host, port);
     let conn = sea_orm::Database::connect(&db_url).await.unwrap();
-    Migrator::up(&conn, None).await.unwrap();
 
     let templates = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*")).unwrap();
     let state = AppState { templates, conn };
@@ -200,3 +198,4 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(delete);
     cfg.default_service(web::route().to(not_found));
 }
+

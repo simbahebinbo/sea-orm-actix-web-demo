@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     #[serde(skip_deserializing)]
-    pub id: i32,
+    pub id: u64,
     pub title: String,
     #[sea_orm(column_type = "Text")]
     pub text: String,
@@ -18,3 +18,4 @@ pub enum Relation {}
 impl ActiveModelBehavior for ActiveModel {
 
 }
+
