@@ -195,3 +195,4 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.default_service(web::route().to(not_found));
 }
 
+
